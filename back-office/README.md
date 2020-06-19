@@ -1,4 +1,4 @@
-# payment-front
+# back-office
 
 ## Requirement
 
