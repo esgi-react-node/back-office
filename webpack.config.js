@@ -2,6 +2,7 @@
 
 const {resolve} = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 console.log(process.env.NODE_ENV);
 
@@ -18,8 +19,15 @@ module.exports = {
                 test: /\.jsx?$/,
                 use: [
                     "babel-loader",
-                    process.env.NODE_ENV && "eslint-loader"
-                ]
+                    process.env.NODE_ENV === "development" && "eslint-loader"
+                ].filter(Boolean)
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                use: [
+                    "file-loader",
+                    process.env.NODE_ENV === "production" && "image-webpack-loader"
+                ].filter(Boolean)
             }
         ]
     },
@@ -30,9 +38,17 @@ module.exports = {
         ]
     },
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: resolve("src", "static"),
+                    to: resolve("dist")
+                }
+            ]
+        }),
         new HtmlWebpackPlugin({
             template: resolve("src", "index.html"),
-            inject: "head"
+            inject: false
         })
     ],
     devServer: {
