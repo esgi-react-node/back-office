@@ -6,10 +6,14 @@ import {render} from "react-dom";
 import Home from "./pages/Home";
 
 window.addEventListener("load", () => {
-    const root = document.getElementById("root");
+    let root = document.getElementById("root");
 
     if (root === null) {
-        throw new Error("Unable to find the root element.");
+        root = document.createElement("div");
+
+        root.setAttribute("id", "root");
+
+        document.body.appendChild(root);
     }
 
     render(<Home />, root);
