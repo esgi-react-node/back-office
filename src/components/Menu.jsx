@@ -26,6 +26,7 @@ const useStyles = makeStyles({
 
 const Menu = () => {
     const {menuOpen, setMenuOpen} = useMenuContext();
+    const userConnected = false;
     const classes = useStyles();
 
     const closeMenu = () => setMenuOpen(false);
@@ -35,30 +36,39 @@ const Menu = () => {
             <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
                 <List className={classes.list}>
                     <ListItem>
-                        <ListItemText primary="Back-Office" />
+                        <ListItemText primary="John DOE" />
                     </ListItem>
 
                     <Divider />
 
-                    <ListItem button component={Link} to="/" className={classes.list.item} onClick={closeMenu}>
-                        <ListItemIcon><HomeIcon /></ListItemIcon>
-                        <ListItemText primary="Home" />
-                    </ListItem>
+                    {userConnected ? (
+                        <>
+                            <ListItem button component={Link} to="/" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><HomeIcon /></ListItemIcon>
+                                <ListItemText primary="Home" />
+                            </ListItem>
 
-                    <ListItem button component={Link} to="/dashboard" className={classes.list.item} onClick={closeMenu}>
-                        <ListItemIcon><Equalizer /></ListItemIcon>
-                        <ListItemText primary="Dashboard" />
-                    </ListItem>
+                            <ListItem button component={Link} to="/dashboard" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><Equalizer /></ListItemIcon>
+                                <ListItemText primary="Dashboard" />
+                            </ListItem>
 
-                    <ListItem button component={Link} to="/merchants" className={classes.list.item} onClick={closeMenu}>
-                        <ListItemIcon><StorefrontIcon /></ListItemIcon>
-                        <ListItemText primary="Merchants" />
-                    </ListItem>
+                            <ListItem button component={Link} to="/merchants" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><StorefrontIcon /></ListItemIcon>
+                                <ListItemText primary="Merchants" />
+                            </ListItem>
 
-                    <ListItem button component={Link} to="/transactions" className={classes.list.item} onClick={closeMenu}>
-                        <ListItemIcon><PaymentIcon /></ListItemIcon>
-                        <ListItemText primary="Transactions" />
-                    </ListItem>
+                            <ListItem button component={Link} to="/transactions" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><PaymentIcon /></ListItemIcon>
+                                <ListItemText primary="Transactions" />
+                            </ListItem>
+                        </>
+                    ) : (
+                        <ListItem button component={Link} to="/signin" className={classes.list.item} onClick={closeMenu}>
+                            <ListItemIcon><HomeIcon /></ListItemIcon>
+                            <ListItemText primary="Signin" />
+                        </ListItem>
+                    )}
                 </List>
             </Drawer>
         </div>
