@@ -1,11 +1,12 @@
 import {isDigitCharacter} from "./character.js";
 
 /**
- * Time complexity: O(n)
- * Space complexity: O(1)
- *
- * @param {string|number} creditCardNumber
- * @return {boolean}
+ * @summary Check if a credit card is valid or not.
+ * @param {string|number} creditCardNumber The credit card number to check.
+ * @return {boolean} Whether the credit card is valid or not.
+ * @example
+ * isCreditCardNumberValid(123456789);
+ * isCreditCardNumberValid("123456789");
  */
 export function isCreditCardNumberValid(creditCardNumber) {
     if (typeof creditCardNumber !== "string") {
