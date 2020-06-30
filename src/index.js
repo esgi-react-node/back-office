@@ -3,7 +3,7 @@
 import React from "react";
 import {render} from "react-dom";
 
-import Home from "./pages/Home";
+import App from "./App";
 
 window.addEventListener("load", () => {
     let root = document.getElementById("root");
@@ -16,5 +16,5 @@ window.addEventListener("load", () => {
         document.body.appendChild(root);
     }
 
-    render(<Home />, root);
+    render(<App />, root);
 });
