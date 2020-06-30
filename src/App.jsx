@@ -5,12 +5,15 @@ import DashboardPage from "./pages/Dashboard";
 import MerchantsPage from "./pages/Merchants";
 import MerchantPage from "./pages/Merchant";
 import TransactionsPage from "./pages/Transactions";
+import SigninPage from "./pages/Signin";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 import {MenuProvider} from "./contexts/Menu";
 
 const App = () => {
+    const userConnected = false;
+
     return (
         <React.StrictMode>
             <BrowserRouter>
@@ -20,12 +23,21 @@ const App = () => {
                 </MenuProvider>
 
                 <Switch>
-                    <Route path="/" component={HomePage} exact />
-                    <Route path="/dashboard" component={DashboardPage} exact />
-                    <Route path="/merchants" component={MerchantsPage} exact />
-                    <Route path="/merchants/:id" component={MerchantPage} exact />
-                    <Route path="/transactions" component={TransactionsPage} exact />
-                    <Route component={NotFoundPage} />
+                    {userConnected ? (
+                        <>
+                            <Route path="/" component={HomePage} exact />
+                            <Route path="/dashboard" component={DashboardPage} exact />
+                            <Route path="/merchants" component={MerchantsPage} exact />
+                            <Route path="/merchants/:id" component={MerchantPage} exact />
+                            <Route path="/transactions" component={TransactionsPage} exact />
+                            <Route component={NotFoundPage} />
+                        </>
+                    ) : (
+                        <>
+                            <Route path="/signin" component={SigninPage} exact />
+                            <Redirect to="/signin" />
+                        </>
+                    )}
                 </Switch>
             </BrowserRouter>
         </React.StrictMode>
