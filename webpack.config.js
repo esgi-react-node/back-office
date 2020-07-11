@@ -4,8 +4,6 @@ const {resolve} = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-console.log(process.env.NODE_ENV);
-
 module.exports = {
     mode: process.env.NODE_ENV || "production",
     entry: resolve("src", "index.js"),
