@@ -12,6 +12,7 @@ import Divider from "@material-ui/core/Divider";
 import Equalizer from "@material-ui/icons/Equalizer";
 import StorefrontIcon from "@material-ui/icons/Storefront";
 import PaymentIcon from "@material-ui/icons/Payment";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 const useStyles = makeStyles({
     list: {
@@ -65,7 +66,7 @@ const Menu = () => {
                         </>
                     ) : (
                         <ListItem button component={Link} to="/signin" className={classes.list.item} onClick={closeMenu}>
-                            <ListItemIcon><HomeIcon /></ListItemIcon>
+                            <ListItemIcon><VpnKeyIcon /></ListItemIcon>
                             <ListItemText primary="Signin" />
                         </ListItem>
                     )}
