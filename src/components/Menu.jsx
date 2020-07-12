@@ -13,6 +13,7 @@ import Equalizer from "@material-ui/icons/Equalizer";
 import StorefrontIcon from "@material-ui/icons/Storefront";
 import PaymentIcon from "@material-ui/icons/Payment";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 const useStyles = makeStyles({
     list: {
@@ -63,12 +64,20 @@ const Menu = () => {
                                 <ListItemIcon><PaymentIcon /></ListItemIcon>
                                 <ListItemText primary="Transactions" />
                             </ListItem>
+
                         </>
                     ) : (
-                        <ListItem button component={Link} to="/signin" className={classes.list.item} onClick={closeMenu}>
-                            <ListItemIcon><VpnKeyIcon /></ListItemIcon>
-                            <ListItemText primary="Signin" />
-                        </ListItem>
+                        <>
+                            <ListItem button component={Link} to="/signin" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><VpnKeyIcon /></ListItemIcon>
+                                <ListItemText primary="Signin" />
+                            </ListItem>
+
+                            <ListItem button component={Link} to="/signup" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><AccountCircleIcon /></ListItemIcon>
+                                <ListItemText primary="Signup" />
+                            </ListItem>
+                        </>
                     )}
                 </List>
             </Drawer>
