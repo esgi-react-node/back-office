@@ -6,6 +6,7 @@ import MerchantsPage from "./pages/Merchants";
 import MerchantPage from "./pages/Merchant";
 import TransactionsPage from "./pages/Transactions";
 import SigninPage from "./pages/Signin";
+import SignupPage from "./pages/Signup";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
@@ -35,6 +36,7 @@ const App = () => {
                     ) : (
                         <>
                             <Route path="/signin" component={SigninPage} exact />
+                            <Route path="/signup" component={SignupPage} exact />
                             <Redirect to="/signin" />
                         </>
                     )}
