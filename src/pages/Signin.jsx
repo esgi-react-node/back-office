@@ -9,6 +9,8 @@ import {useFormState, useFormError} from "../hooks/form";
 import {useFocusRef} from "../hooks/element";
 import {isValidEmail} from "../lib/email";
 import {isValidPassword} from "../lib/password";
+import {useUserContext} from "../contexts/User";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -20,30 +22,6 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const signin = (email, password) => {
-    fetch("http://localhost:3000/login_check", {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: email,
-            password
-        })
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error();
-        }
-
-        return response.json();
-    }).then(json => {
-        console.log(`Response from the API: ${json}`);
-    }).catch(error => {
-        console.error("An error occurred while trying to login check");
-        console.error(error);
-    });
-};
 
 const Signin = () => {
     const styles = useStyles();
@@ -51,8 +29,42 @@ const Signin = () => {
     const [password, setPassword] = useFormState("");
     const [hasEmailError, emailError] = useFormError(isValidEmail, "Email is invalid", email);
     const [hasPasswordError, passwordError] = useFormError(isValidPassword, "Eight characters, lower, upper, digits & symbols", password);
-
     const emailRef = useFocusRef();
+    const {setUser} = useUserContext();
+    const history = useHistory();
+
+    const signin = (email, password) => {
+        fetch("http://localhost:3000/login_check", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: email,
+                password
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            return response.json();
+        }).then(json => {
+            if (!json.token) {
+                throw new Error("Bad response from the server");
+            }
+
+            setUser({
+                token: json.token
+            });
+
+            history.push("/");
+        }).catch(error => {
+            console.error("An error occurred while trying to login check");
+            console.error(error);
+        });
+    };
 
     return (
         <Container className={styles.container}>
@@ -60,6 +72,7 @@ const Signin = () => {
                 <Grid item xs={12} sm={8} md={6} lg={4}>
                     <FormControl className={styles.formControl}>
                         <TextField
+                            type="email"
                             inputRef={emailRef}
                             label="Email"
                             variant="outlined"
