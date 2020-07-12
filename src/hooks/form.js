@@ -1,19 +1,31 @@
-export const useFormInputSetter = setter => event => {
-    if (event?.target?.value) {
-        setter(event.target.value);
-    } else if (event?.currentTarget?.value) {
-        setter(event.currentTarget.value);
-    }
+import {useState, useEffect} from "react";
+
+export const useFormState = (defaultValue = null) => {
+    const [state, setState] = useState(defaultValue);
+
+    const setFormState = (event) => {
+        setState((event?.target?.value ?? event?.currentTarget?.value) || "");
+    };
+
+    return [state, setFormState, setState];
 };
 
-export const useFormInputWithError = ({onValue, onError, validator, error}) => event => {
-    const formValue = event?.target?.value ?? event?.currentTarget?.value ?? "";
+export const useFormError = (predicate, error, ...dependencies) => {
+    const [hasError, setHasError] = useState(false);
+    const [helperText, setHelperText] = useState("");
 
-    onValue(formValue);
+    useEffect(() => {
+        if (dependencies.every(dependency => !dependency)) {
+            setHasError(false);
+            setHelperText("");
+        } else if (dependencies.every(dependency => predicate(dependency))) {
+            setHasError(false);
+            setHelperText("");
+        } else {
+            setHasError(true);
+            setHelperText(error);
+        }
+    }, dependencies);
 
-    if (validator(formValue)) {
-        onError("");
-    } else {
-        onError(error);
-    }
+    return [hasError, helperText];
 };
