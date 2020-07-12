@@ -44,9 +44,7 @@ const Signup = () => {
             }
 
             return response.json();
-        }).then(json => {
-            console.log("Response from the server (JSON)");
-            console.log(json);
+        }).then(() => {
             history.push("/signin");
         }).catch(error => {
             console.error("Error while reaching the API");
@@ -61,6 +59,7 @@ const Signup = () => {
                     <Grid direction="row" justify="center" container spacing={3}>
                         <Grid xs={12} item>
                             <TextField
+                                type="email"
                                 inputRef={emailRef}
                                 className={styles.textField}
                                 label="Email*" variant="outlined"
@@ -95,7 +94,14 @@ const Signup = () => {
                 </Grid>
 
                 <Grid container justify="center">
-                    <Button variant="contained" color="primary" type="button" onClick={signup}>Signin</Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        type="button"
+                        onClick={signup}
+                        disabled={hasEmailError || hasPasswordError || hasPasswordConfirmationError}>
+                        Signin
+                    </Button>
                 </Grid>
             </Grid>
         </Container>
