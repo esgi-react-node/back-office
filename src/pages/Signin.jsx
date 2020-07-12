@@ -1,11 +1,14 @@
-import React, {useState} from "react";
+import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import FormControl from "@material-ui/core/FormControl";
 import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import {useFormInputWithError} from "../hooks/form";
+import {useFormState, useFormError} from "../hooks/form";
+import {useFocusRef} from "../hooks/element";
+import {isValidEmail} from "../lib/email";
+import {isValidPassword} from "../lib/password";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -16,16 +19,6 @@ const useStyles = makeStyles(() => ({
         width: "100%"
     }
 }));
-
-const isValidEmail = email => {
-    /* eslint-disable-next-line */
-    const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    return pattern.test(email);
-};
-
-const isValidPassword = password => /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}/.test(password);
-
 
 const signin = (email, password) => {
     fetch("http://localhost:3000/login_check", {
@@ -54,27 +47,47 @@ const signin = (email, password) => {
 
 const Signin = () => {
     const styles = useStyles();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const setSigninEmail = useFormInputWithError({onValue: setEmail, onError: setEmailError, validator: isValidEmail, error: "Email is invalid"});
-    const setSigninPassword = useFormInputWithError({onValue: setPassword, onError: setPasswordError, validator: isValidPassword, error: "Password must contains letter (upper, lower), digits & symbols"});
+    const [email, setEmail] = useFormState("");
+    const [password, setPassword] = useFormState("");
+    const [hasEmailError, emailError] = useFormError(isValidEmail, "Email is invalid", email);
+    const [hasPasswordError, passwordError] = useFormError(isValidPassword, "Eight characters, lower, upper, digits & symbols", password);
+
+    const emailRef = useFocusRef();
 
     return (
         <Container className={styles.container}>
             <Grid container justify="center">
                 <Grid item xs={12} sm={8} md={6} lg={4}>
                     <FormControl className={styles.formControl}>
-                        <TextField label="Email" variant="outlined" onInput={setSigninEmail} helperText={emailError} error={!!emailError} />
+                        <TextField
+                            inputRef={emailRef}
+                            label="Email"
+                            variant="outlined"
+                            onInput={setEmail}
+                            helperText={emailError}
+                            error={hasEmailError}
+                            autoFocus />
                     </FormControl>
 
                     <FormControl className={styles.formControl}>
-                        <TextField type="password" label="Password" variant="outlined" onInput={setSigninPassword} helperText={passwordError} error={!!passwordError} />
+                        <TextField
+                            type="password"
+                            label="Password"
+                            variant="outlined"
+                            onInput={setPassword}
+                            helperText={passwordError}
+                            error={hasPasswordError} />
                     </FormControl>
 
                     <Grid container justify="center">
-                        <Button variant="contained" color="primary" type="button" onClick={() => signin(email, password)} disabled={(!!emailError || !!passwordError) || !email || !password}>Signin</Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="button"
+                            onClick={() => signin(email, password)}
+                            disabled={hasPasswordError || hasEmailError}>
+                            Signin
+                        </Button>
                     </Grid>
                 </Grid>
             </Grid>
