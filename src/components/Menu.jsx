@@ -14,6 +14,9 @@ import StorefrontIcon from "@material-ui/icons/Storefront";
 import PaymentIcon from "@material-ui/icons/Payment";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import {useUserContext} from "../contexts/User";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles({
     list: {
@@ -28,10 +31,16 @@ const useStyles = makeStyles({
 
 const Menu = () => {
     const {menuOpen, setMenuOpen} = useMenuContext();
-    const userConnected = false;
     const classes = useStyles();
-
+    const {user, setUser} = useUserContext();
     const closeMenu = () => setMenuOpen(false);
+    const history = useHistory();
+
+    const disconnect = () => {
+        setUser({});
+        setMenuOpen(false);
+        history.push("/signin");
+    };
 
     return (
         <div>
@@ -43,7 +52,7 @@ const Menu = () => {
 
                     <Divider />
 
-                    {userConnected ? (
+                    {user.token ? (
                         <>
                             <ListItem button component={Link} to="/" className={classes.list.item} onClick={closeMenu}>
                                 <ListItemIcon><HomeIcon /></ListItemIcon>
@@ -60,11 +69,20 @@ const Menu = () => {
                                 <ListItemText primary="Merchants" />
                             </ListItem>
 
+                            <ListItem button component={Link} to="/merchant/new" className={classes.list.item} onClick={closeMenu}>
+                                <ListItemIcon><StorefrontIcon /></ListItemIcon>
+                                <ListItemText primary="Merchant — New" />
+                            </ListItem>
+
                             <ListItem button component={Link} to="/transactions" className={classes.list.item} onClick={closeMenu}>
                                 <ListItemIcon><PaymentIcon /></ListItemIcon>
                                 <ListItemText primary="Transactions" />
                             </ListItem>
-
+                            
+                            <ListItem button className={classes.list.item} onClick={disconnect}>
+                                <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+                                <ListItemText primary="Déconnexion" />
+                            </ListItem>
                         </>
                     ) : (
                         <>
