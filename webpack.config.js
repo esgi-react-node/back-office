@@ -54,8 +54,9 @@ module.exports = {
         port: 9000,
         clientLogLevel: "info",
         contentBase: resolve("dist"),
-        historyApiFallback: true,
         overlay: true,
-        watchContentBase: true
+        watchContentBase: true,
+        writeToDisk: true,
+        historyApiFallback: true
     }
 };
