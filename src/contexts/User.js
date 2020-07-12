@@ -1,16 +1,22 @@
 import PropTypes from "prop-types";
-import React, {createContext, useState, useContext} from "react";
+import React, {createContext, useState, useContext, useEffect} from "react";
 
 const UserContext = createContext();
 
 export const UserProvider = ({children}) => {
-    const [userConnected, setUserConnected] = useState(false);
+    const [user, setUser] = useState({});
 
-    return (
-        <UserProvider.Provider value={{userConnected, setUserConnected}}>
-            {children}
-        </UserProvider.Provider>
-    );
+    useEffect(() => {
+        setUser(JSON.parse(window.localStorage.getItem("user") ?? "{}"));
+    }, []);
+
+    useEffect(() => {
+        window.localStorage.setItem("user", JSON.stringify(user));
+    }, [user]);
+
+    return <UserContext.Provider value={{user, setUser}}>
+        {children}
+    </UserContext.Provider>;
 };
 
 export const useUserContext = () => useContext(UserContext);
