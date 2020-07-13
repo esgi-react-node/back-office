@@ -4,7 +4,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import HomeIcon from "@material-ui/icons/Home";
 import {useMenuContext} from "../contexts/Menu";
 import {Link} from "react-router-dom";
 import {makeStyles} from "@material-ui/core/styles";
@@ -26,12 +25,16 @@ const useStyles = makeStyles({
             color: "inherit",
             textDecoration: "none"
         }
+    },
+
+    title: {
+        textAlign: "center"
     }
 });
 
 const Menu = () => {
     const {menuOpen, setMenuOpen} = useMenuContext();
-    const classes = useStyles();
+    const styles = useStyles();
     const {user, setUser} = useUserContext();
     const closeMenu = () => setMenuOpen(false);
     const history = useHistory();
@@ -45,53 +48,58 @@ const Menu = () => {
     return (
         <div>
             <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
-                <List className={classes.list}>
+                <List className={styles.list}>
                     <ListItem>
-                        <ListItemText primary="John DOE" />
+                        <ListItemText className={styles.title} primary="John DOE" />
                     </ListItem>
 
                     <Divider />
 
                     {user.token ? (
                         <>
-                            <ListItem button component={Link} to="/" className={classes.list.item} onClick={closeMenu}>
-                                <ListItemIcon><HomeIcon /></ListItemIcon>
-                                <ListItemText primary="Home" />
+
+                            <ListItem button component={Link} to="/account" className={styles.list.item} onClick={closeMenu}>
+                                <ListItemIcon><AccountCircleIcon /></ListItemIcon>
+                                <ListItemText primary="Account" />
                             </ListItem>
 
-                            <ListItem button component={Link} to="/dashboard" className={classes.list.item} onClick={closeMenu}>
+                            <ListItem button component={Link} to="/dashboard" className={styles.list.item} onClick={closeMenu}>
                                 <ListItemIcon><Equalizer /></ListItemIcon>
                                 <ListItemText primary="Dashboard" />
                             </ListItem>
 
-                            <ListItem button component={Link} to="/merchants" className={classes.list.item} onClick={closeMenu}>
+                            <ListItem button component={Link} to="/merchants" className={styles.list.item} onClick={closeMenu}>
                                 <ListItemIcon><StorefrontIcon /></ListItemIcon>
                                 <ListItemText primary="Merchants" />
                             </ListItem>
 
-                            <ListItem button component={Link} to="/merchant/new" className={classes.list.item} onClick={closeMenu}>
-                                <ListItemIcon><StorefrontIcon /></ListItemIcon>
-                                <ListItemText primary="Merchant — New" />
-                            </ListItem>
-
-                            <ListItem button component={Link} to="/transactions" className={classes.list.item} onClick={closeMenu}>
+                            <ListItem button component={Link} to="/transactions" className={styles.list.item} onClick={closeMenu}>
                                 <ListItemIcon><PaymentIcon /></ListItemIcon>
                                 <ListItemText primary="Transactions" />
                             </ListItem>
+
+                            <Divider />
+
+                            <ListItem button component={Link} to="/users" className={styles.list.item} onClick={closeMenu}>
+                                <ListItemIcon><AccountCircleIcon /></ListItemIcon>
+                                <ListItemText primary="Users" />
+                            </ListItem>
+
+                            <Divider />
                             
-                            <ListItem button className={classes.list.item} onClick={disconnect}>
+                            <ListItem button className={styles.list.item} onClick={disconnect}>
                                 <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                                 <ListItemText primary="Déconnexion" />
                             </ListItem>
                         </>
                     ) : (
                         <>
-                            <ListItem button component={Link} to="/signin" className={classes.list.item} onClick={closeMenu}>
+                            <ListItem button component={Link} to="/signin" className={styles.list.item} onClick={closeMenu}>
                                 <ListItemIcon><VpnKeyIcon /></ListItemIcon>
                                 <ListItemText primary="Signin" />
                             </ListItem>
 
-                            <ListItem button component={Link} to="/signup" className={classes.list.item} onClick={closeMenu}>
+                            <ListItem button component={Link} to="/signup" className={styles.list.item} onClick={closeMenu}>
                                 <ListItemIcon><AccountCircleIcon /></ListItemIcon>
                                 <ListItemText primary="Signup" />
                             </ListItem>
