@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -9,6 +9,8 @@ import {useFormState, useFormError} from "../hooks/form";
 import {useFocusRef} from "../hooks/element";
 import {isValidEmail} from "../lib/email";
 import {isValidPassword} from "../lib/password";
+import Typography from "@material-ui/core/Typography";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -16,11 +18,15 @@ const useStyles = makeStyles(() => ({
     },
     textField: {
         width: "100%"
+    },
+    title: {
+        textAlign: "center"
     }
 }));
 
 const Signup = () => {
     const styles = useStyles();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [email, setFormEmail] = useFormState("");
     const [password, setFormPassword] = useFormState("");
     const [passwordConfirmation, setFormPasswordConfirmation] = useFormState("");
@@ -31,6 +37,8 @@ const Signup = () => {
     const emailRef = useFocusRef();
 
     const signup = () => {
+        setSnackbarOpen(false);
+
         const method = "POST";
         const contentType = {"Content-Type": "application/json"};
         const accept = {"Accept": "application/json"};
@@ -46,15 +54,26 @@ const Signup = () => {
             return response.json();
         }).then(() => {
             history.push("/signin");
-        }).catch(error => {
-            console.error("Error while reaching the API");
-            console.error(error.message);
+        }).catch(() => {
+            setSnackbarOpen(true);
         });
     };
 
     return (
         <Container className={styles.container}>
+
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "left", }}
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={() => setSnackbarOpen(false)}
+                message="User already exist" />
+
             <Grid container justify="center" spacing={5}>
+                <Grid xs={12} item>
+                    <Typography variant="h3" className={styles.title}>Signup</Typography>
+                </Grid>
+
                 <Grid item xs={12} sm={8} md={6} lg={6}>
                     <Grid direction="row" justify="center" container spacing={3}>
                         <Grid xs={12} item>

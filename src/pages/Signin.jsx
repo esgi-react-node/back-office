@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
@@ -11,6 +11,8 @@ import {isValidEmail} from "../lib/email";
 import {isValidPassword} from "../lib/password";
 import {useUserContext} from "../contexts/User";
 import {useHistory} from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -19,12 +21,16 @@ const useStyles = makeStyles(() => ({
     formControl: {
         marginBottom: "20px",
         width: "100%"
+    },
+    title: {
+        textAlign: "center",
+        marginBottom: "20px"
     }
 }));
 
-
 const Signin = () => {
     const styles = useStyles();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [email, setEmail] = useFormState("");
     const [password, setPassword] = useFormState("");
     const [hasEmailError, emailError] = useFormError(isValidEmail, "Email is invalid", email);
@@ -34,6 +40,8 @@ const Signin = () => {
     const history = useHistory();
 
     const signin = (email, password) => {
+        setSnackbarOpen(false);
+
         fetch("http://localhost:3000/login_check", {
             method: "POST",
             headers: {
@@ -59,16 +67,27 @@ const Signin = () => {
                 token: json.token
             });
 
-            history.push("/");
-        }).catch(error => {
-            console.error("An error occurred while trying to login check");
-            console.error(error);
+            history.push("/dashboard");
+        }).catch(() => {
+            setSnackbarOpen(true);
         });
     };
 
     return (
         <Container className={styles.container}>
+
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "left", }}
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={() => setSnackbarOpen(false)}
+                message="Bad credentials" />
+
             <Grid container justify="center">
+                <Grid xs={12} item>
+                    <Typography variant="h3" className={styles.title}>Signin</Typography>
+                </Grid>
+
                 <Grid item xs={12} sm={8} md={6} lg={4}>
                     <FormControl className={styles.formControl}>
                         <TextField

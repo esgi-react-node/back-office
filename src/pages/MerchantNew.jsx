@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import {useFormState} from "../hooks/form";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles(() => ({
 
 const MerchantNew = () => {
     const styles = useStyles();
-
+    const [name, setFormName] = useFormState(""); 
 
     // TODO: useFormState
 
@@ -29,12 +30,14 @@ const MerchantNew = () => {
             <Grid container justify="center" spacing={5}>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Typography variant="h3" className={styles.typography}>New Merchant</Typography>
+                    <p>{name}</p>
                 </Grid>
 
                 <Grid item xs={12} sm={8} md={6} lg={6}>
                     <Grid direction="row" justify="center" container spacing={3}>
                         <Grid xs={12} item>
                             <TextField
+                                onInput={setFormName}
                                 className={styles.textField}
                                 label="Name"
                                 variant="outlined"
