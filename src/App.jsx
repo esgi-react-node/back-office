@@ -14,8 +14,9 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import {MenuProvider} from "./contexts/Menu";
 import {UserProvider, useUserContext} from "./contexts/User";
 import UsersPage from "./pages/Users";
-import UserPage from "./pages/User";
 import MerchantPage from "./pages/Merchant";
+import UserPage from "./pages/User";
+import MerchantTransactionsPage from "./pages/MerchantTransactions";
 
 const RouteList = ({routes}) => routes.map(({path, component}, index) => (
     <Route key={`route-${index}`} path={path} component={component} exact />)
@@ -30,6 +31,7 @@ const Routes = () => {
         { path: "/merchants", component: MerchantsPage },
         { path: "/merchant/new", component: MerchantNewPage },
         { path: "/merchant/:id", component: MerchantPage },
+        { path: "/merchant/:id/transactions", component: MerchantTransactionsPage },
         { path: "/transactions", component: TransactionsPage },
         { path: "/users", component: UsersPage },
         { path: "/user/:id", component: UserPage },
