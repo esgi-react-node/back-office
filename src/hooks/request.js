@@ -1,5 +1,8 @@
+import {useCallback} from "react";
 import {useUserContext} from "../contexts/User";
 import {useHistory} from "react-router-dom";
+
+const URL = "http://localhost:3000";
 
 export const useAuthenticatedRequest = () => {
     const history = useHistory();
@@ -11,9 +14,9 @@ export const useAuthenticatedRequest = () => {
         "Authorization": `Bearer ${user.token}`
     };
     
-    const url = "http://localhost:3000";
+    const URL = "http://localhost:3000";
 
-    const responseHandler = response => {
+    const responseHandler = useCallback(response => {
         if (response.status === 401) {
             setUser({});
             history.push("/signin");
@@ -25,20 +28,51 @@ export const useAuthenticatedRequest = () => {
         }
 
         return response.json();
-    };
+    });
 
     return {
         getRequest(endpoint) {
-            return fetch(`${url}/${endpoint}`, {headers}).then(responseHandler);
+            return fetch(`${URL}/${endpoint}`, {headers}).then(responseHandler);
         },
         postRequest(endpoint, data) {
-            return fetch(`${url}/${endpoint}`, {headers, method: "POST", body: JSON.stringify(data)}).then(responseHandler);
+            return fetch(`${URL}/${endpoint}`, {headers, method: "POST", body: JSON.stringify(data)}).then(responseHandler);
         },
         putRequest(endpoint, data) {
-            return fetch(`${url}/${endpoint}`, {headers, method: "PUT", body: JSON.stringify(data)}).then(responseHandler);
+            return fetch(`${URL}/${endpoint}`, {headers, method: "PUT", body: JSON.stringify(data)}).then(responseHandler);
         },
         deleteRequest(endpoint) {
-            return fetch(`${url}/${endpoint}`, {headers, method: "DELETE"}).then(responseHandler);
+            return fetch(`${URL}/${endpoint}`, {headers, method: "DELETE"}).then(responseHandler);
+        }
+    }; 
+};
+
+export const useRequest = () => {
+    const headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    };
+    
+
+    const responseHandler = useCallback(response => {
+        if (!response.ok) {
+            throw new Error("Failed to fetch");
+        }
+
+        return response.json();
+    });
+
+    return {
+        getRequest(endpoint) {
+            return fetch(`${URL}/${endpoint}`, {headers}).then(responseHandler);
+        },
+        postRequest(endpoint, data) {
+            return fetch(`${URL}/${endpoint}`, {headers, method: "POST", body: JSON.stringify(data)}).then(responseHandler);
+        },
+        putRequest(endpoint, data) {
+            return fetch(`${URL}/${endpoint}`, {headers, method: "PUT", body: JSON.stringify(data)}).then(responseHandler);
+        },
+        deleteRequest(endpoint) {
+            return fetch(`${URL}/${endpoint}`, {headers, method: "DELETE"}).then(responseHandler);
         }
     }; 
 };

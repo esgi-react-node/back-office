@@ -1,10 +1,7 @@
 import React from "react";
-import NotFoundConnectedPage from "./pages/NotFoundConnected";
-import NotFoundDisconnectedPage from "./pages/NotFoundDisconnected";
 import DashboardPage from "./pages/Dashboard";
 import MerchantNewPage from "./pages/MerchantNew";
 import MerchantsPage from "./pages/Merchants";
-import AccountPage from "./pages/Account";
 import TransactionsPage from "./pages/Transactions";
 import SigninPage from "./pages/Signin";
 import SignupPage from "./pages/Signup";
@@ -17,40 +14,34 @@ import UsersPage from "./pages/Users";
 import MerchantPage from "./pages/Merchant";
 import UserPage from "./pages/User";
 import MerchantTransactionsPage from "./pages/MerchantTransactions";
-
-const RouteList = ({routes}) => routes.map(({path, component}, index) => (
-    <Route key={`route-${index}`} path={path} component={component} exact />)
-);
+import {NotificationProvider} from "./contexts/Notification";
+import TransactionPage from "./pages/Transaction";
+import NotFoundConnectedPage from "./pages/NotFoundConnected";
+import NotFoundDisconnectedPage from "./pages/NotFoundDisconnected";
+import InformationPage from "./pages/Information";
 
 const Routes = () => {
     const {user} = useUserContext();
 
-    const connectedRoutes = [
-        { path: "/account", component: AccountPage },
-        { path: "/dashboard", component: DashboardPage },
-        { path: "/merchants", component: MerchantsPage },
-        { path: "/merchant/new", component: MerchantNewPage },
-        { path: "/merchant/:id", component: MerchantPage },
-        { path: "/merchant/:id/transactions", component: MerchantTransactionsPage },
-        { path: "/transactions", component: TransactionsPage },
-        { path: "/users", component: UsersPage },
-        { path: "/user/:id", component: UserPage },
-    ];
-
     if (user.token) {
         return <Switch>
-            <RouteList routes={connectedRoutes} />
+            <Route path="/dashboard" component={DashboardPage} exact />
+            <Route path="/merchants" component={MerchantsPage} exact />
+            <Route path="/merchant/new" component={MerchantNewPage} exact />
+            <Route path="/merchant/:id" component={MerchantPage} exact />
+            <Route path="/merchant/:id/transactions" component={MerchantTransactionsPage} exact />
+            <Route path="/transactions" component={TransactionsPage} exact />
+            <Route path="/transaction/:id" component={TransactionPage} exact />
+            <Route path="/users" component={UsersPage} exact />
+            <Route path="/user/:id" component={UserPage} exact />
+            <Route path="/information" component={InformationPage} exact />
             <Route component={NotFoundConnectedPage} />
         </Switch>;
     }
 
-    const disconnectedRoutes = [
-        { path: "/signin", component: SigninPage },
-        { path: "/signup", component: SignupPage },
-    ];
-
     return <Switch>
-        <RouteList routes={disconnectedRoutes} />
+        <Route path="/signin" component={SigninPage} exact />
+        <Route path="/signup" component={SignupPage} exact />
         <Route component={NotFoundDisconnectedPage} />
     </Switch>;
 };
@@ -58,16 +49,18 @@ const Routes = () => {
 const App = () => {
     return (
         <React.StrictMode>
-            <UserProvider>
-                <BrowserRouter>
+            <BrowserRouter>
+                <UserProvider>
                     <MenuProvider>
                         <Menu />
                         <Header />
                     </MenuProvider>
 
-                    <Routes />
-                </BrowserRouter>
-            </UserProvider>
+                    <NotificationProvider>
+                        <Routes />
+                    </NotificationProvider>
+                </UserProvider>
+            </BrowserRouter>
         </React.StrictMode>
     );
 };

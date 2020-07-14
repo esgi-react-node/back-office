@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
@@ -12,7 +12,8 @@ import {isValidPassword} from "../lib/password";
 import {useUserContext} from "../contexts/User";
 import {useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import Snackbar from "@material-ui/core/Snackbar";
+import {useNotificationContext} from "../contexts/Notification";
+import {useRequest} from "../hooks/request";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -29,8 +30,9 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Signin = () => {
+    const {postRequest} = useRequest();
+    const {setSuccessNotification, setErrorNotification} = useNotificationContext();
     const styles = useStyles();
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [email, setEmail] = useFormState("");
     const [password, setPassword] = useFormState("");
     const [hasEmailError, emailError] = useFormError(isValidEmail, "Email is invalid", email);
@@ -40,49 +42,20 @@ const Signin = () => {
     const history = useHistory();
 
     const signin = (email, password) => {
-        setSnackbarOpen(false);
-
-        fetch("http://localhost:3000/login_check", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: email,
-                password
-            })
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error();
-            }
-
-            return response.json();
-        }).then(json => {
-            if (!json.token) {
-                throw new Error("Bad response from the server");
-            }
-
-            setUser({
-                token: json.token
-            });
-
+        postRequest("login_check", {
+            username: email,
+            password
+        }).then(({user, token}) => {
+            setUser({...user, token});
+            setSuccessNotification("Connected successfully");
             history.push("/dashboard");
         }).catch(() => {
-            setSnackbarOpen(true);
+            setErrorNotification("Bad credentials");
         });
     };
 
     return (
         <Container className={styles.container}>
-
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "left", }}
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={() => setSnackbarOpen(false)}
-                message="Bad credentials" />
-
             <Grid container justify="center">
                 <Grid xs={12} item>
                     <Typography variant="h3" className={styles.title}>Signin</Typography>

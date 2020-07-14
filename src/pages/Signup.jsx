@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {useHistory} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -10,7 +10,7 @@ import {useFocusRef} from "../hooks/element";
 import {isValidEmail} from "../lib/email";
 import {isValidPassword} from "../lib/password";
 import Typography from "@material-ui/core/Typography";
-import Snackbar from "@material-ui/core/Snackbar";
+import {useNotificationContext} from "../contexts/Notification";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -25,8 +25,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Signup = () => {
+    const {setSuccessNotification, setErrorNotification} = useNotificationContext();
     const styles = useStyles();
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [email, setFormEmail] = useFormState("");
     const [password, setFormPassword] = useFormState("");
     const [passwordConfirmation, setFormPasswordConfirmation] = useFormState("");
@@ -37,8 +37,6 @@ const Signup = () => {
     const emailRef = useFocusRef();
 
     const signup = () => {
-        setSnackbarOpen(false);
-
         const method = "POST";
         const contentType = {"Content-Type": "application/json"};
         const accept = {"Accept": "application/json"};
@@ -53,22 +51,15 @@ const Signup = () => {
 
             return response.json();
         }).then(() => {
+            setSuccessNotification("Successfully created your account");
             history.push("/signin");
         }).catch(() => {
-            setSnackbarOpen(true);
+            setErrorNotification("An account already exists for this email");
         });
     };
 
     return (
         <Container className={styles.container}>
-
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "left", }}
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={() => setSnackbarOpen(false)}
-                message="User already exist" />
-
             <Grid container justify="center" spacing={5}>
                 <Grid xs={12} item>
                     <Typography variant="h3" className={styles.title}>Signup</Typography>

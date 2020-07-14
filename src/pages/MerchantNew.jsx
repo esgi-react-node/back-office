@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -7,7 +7,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {useFormState} from "../hooks/form";
 import {useAuthenticatedRequest} from "../hooks/request";
-import Snackbar from "@material-ui/core/Snackbar";
+import {useNotificationContext} from "../contexts/Notification";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -22,10 +23,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 const MerchantNew = () => {
+    const history = useHistory();
+    const {setSuccessNotification, setErrorNotification} = useNotificationContext();
     const styles = useStyles();
     const {postRequest} = useAuthenticatedRequest();
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [name, setFormName] = useFormState("Name"); 
     const [kbisUrl, setKbisUrl] = useFormState("https://google.fr");
     const [currency, setCurrency] = useFormState("EUR");
@@ -57,22 +58,15 @@ const MerchantNew = () => {
                 country
             }
         }).then(() => {
-            setSnackbarMessage("Successfully added a new merchant");
+            setSuccessNotification("Successfully added a new merchant");
+            history.push("/merchants");
         }).catch(() => {
-            setSnackbarMessage("Failed to add a new merchant");
-        }).finally(() => {
-            setSnackbarOpen(true);
+            setErrorNotification("Failed to add a new merchant");
         });
     };
 
     return (
         <Container className={styles.container}>
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={() => setSnackbarOpen(false)}
-                message={snackbarMessage} />
             <Grid container justify="center" spacing={5}>
                 <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Typography variant="h3" className={styles.typography}>New Merchant</Typography>

@@ -2,7 +2,6 @@ import React, {useEffect, useState, useCallback} from "react";
 import {useParams} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {useAuthenticatedRequest} from "../hooks/request";
-import Snackbar from "@material-ui/core/Snackbar";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import {makeStyles} from "@material-ui/core/styles";
@@ -15,6 +14,7 @@ import TableBody from "@material-ui/core/TableBody";
 import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TableHead from "@material-ui/core/TableHead";
+import {useNotificationContext} from "../contexts/Notification";
 
 const useStyles = makeStyles(() => ({
     grid: {
@@ -23,57 +23,44 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Merchant = () => {
+    const {setErrorNotification, setSuccessNotification} = useNotificationContext();
     const {id} = useParams();
     const {getRequest, putRequest, deleteRequest} = useAuthenticatedRequest();
     const styles = useStyles();
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
     const [merchant, setMerchant] = useState(null);
 
     useEffect(() => {
-        setSnackbarMessage("Retrieving data...");
-        setSnackbarOpen(true);
-
         getRequest(`merchants/${id}`).then(json => {
             setMerchant(json);
-            setSnackbarOpen(false);
-            setSnackbarMessage("");
         }).catch(() => {
-            setSnackbarMessage("Failed to retrieve details for the merchant");
-            setSnackbarOpen(true);
+            setErrorNotification("Failed to retrieve details for the merchant");
         });
     }, []);
 
     const validate = useCallback(() => {
         putRequest(`merchants/${id}/validate`).then((json) => {
             setMerchant(json);
-            setSnackbarMessage("Successfully validated the merchant");
+            setSuccessNotification("Successfully validated the merchant");
         }).catch(() => {
-            setSnackbarMessage("Failed to validate the merchant");
-        }).finally(() => {
-            setSnackbarOpen(true);
+            setErrorNotification("Failed to validate the merchant");
         }); 
     });
 
     const revoke = useCallback(() => {
         deleteRequest(`merchants/${id}/credentials`).then((json) => {
             setMerchant(json);
-            setSnackbarMessage("Successfully revoked credentials");
+            setSuccessNotification("Successfully revoked credentials");
         }).catch(() => {
-            setSnackbarMessage("Failed to revoke credentials");
-        }).finally(() => {
-            setSnackbarOpen(true);
+            setErrorNotification("Failed to revoke credentials");
         });
     });
 
     const regenerate = useCallback(() => {
         getRequest(`merchants/${id}/credentials`).then((json) => {
             setMerchant(json);
-            setSnackbarMessage("Successfully regenerated credentials");
+            setSuccessNotification("Successfully regenerated credentials");
         }).catch(() => {
-            setSnackbarMessage("Failed to regenerate the credentials");
-        }).finally(() => {
-            setSnackbarOpen(true);
+            setErrorNotification("Failed to regenerate the credentials");
         });
     });
 
@@ -95,12 +82,6 @@ const Merchant = () => {
                         <Button variant="contained" color="primary">Transactions</Button>
                     </Link>
                 </Typography>
-                <Snackbar
-                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                    open={snackbarOpen}
-                    autoHideDuration={6000}
-                    onClose={() => setSnackbarOpen(false)}
-                    message={snackbarMessage} />
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>

@@ -57,10 +57,9 @@ const Menu = () => {
 
                     {user.token ? (
                         <>
-
-                            <ListItem button component={Link} to="/account" className={styles.list.item} onClick={closeMenu}>
+                            <ListItem button component={Link} to="/information" className={styles.list.item} onClick={closeMenu}>
                                 <ListItemIcon><AccountCircleIcon /></ListItemIcon>
-                                <ListItemText primary="Account" />
+                                <ListItemText primary="Information" />
                             </ListItem>
 
                             <ListItem button component={Link} to="/dashboard" className={styles.list.item} onClick={closeMenu}>
