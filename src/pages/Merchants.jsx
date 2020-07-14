@@ -14,6 +14,7 @@ import TableBody from "@material-ui/core/TableBody";
 import {dateStringToHuman} from "../lib/date";
 import {numberToCurrency} from "../lib/number";
 import {Link} from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(() => ({
     grid: {
@@ -43,7 +44,13 @@ const Merchants = () => {
     return (
         <Container>
             <Grid justify="center" className={styles.grid} container>
-                <Typography variant="h3">Merchants</Typography>
+                <Typography variant="h3">
+                    <span>Merchants </span>
+                    <Link to="/merchant/new">
+                        <Button variant="contained" color="primary">New</Button>
+                    </Link>
+                </Typography>
+
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
