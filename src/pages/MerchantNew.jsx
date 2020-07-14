@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -30,8 +30,8 @@ const MerchantNew = () => {
     const [name, setFormName] = useFormState("Name"); 
     const [kbisUrl, setKbisUrl] = useFormState("https://google.fr");
     const [currency, setCurrency] = useFormState("EUR");
-    const [confirmUrl, setConfirmUrl] = useFormState("https://google.fr");
-    const [cancelUrl, setCancelUrl] = useFormState("https://google.fr");
+    const [confirmUrl, setConfirmUrl] = useFormState("http://merchant-api:3000/confirm");
+    const [cancelUrl, setCancelUrl] = useFormState("http://merchant-api:3000/cancel");
     const [contactName, setContactName] = useFormState("Contact Name");
     const [email, setEmail] = useFormState("contact@name.com");
     const [phoneNumber, setPhoneNumber] = useFormState("0102030405");
@@ -40,7 +40,7 @@ const MerchantNew = () => {
     const [zipCode, setZipCode] = useFormState("75012");
     const [country, setCountry] = useFormState("France");
 
-    const add = () => {
+    const add = useCallback(() => {
         postRequest("merchants", {
             name,
             KBISUrl: kbisUrl,
@@ -63,7 +63,7 @@ const MerchantNew = () => {
         }).catch(() => {
             setErrorNotification("Failed to add a new merchant");
         });
-    };
+    });
 
     return (
         <Container className={styles.container}>

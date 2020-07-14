@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {useHistory} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -36,7 +36,7 @@ const Signup = () => {
     const history = useHistory();
     const emailRef = useFocusRef();
 
-    const signup = () => {
+    const signup = useCallback(() => {
         const method = "POST";
         const contentType = {"Content-Type": "application/json"};
         const accept = {"Accept": "application/json"};
@@ -56,7 +56,7 @@ const Signup = () => {
         }).catch(() => {
             setErrorNotification("An account already exists for this email");
         });
-    };
+    });
 
     return (
         <Container className={styles.container}>

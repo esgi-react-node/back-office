@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
@@ -41,7 +41,7 @@ const Signin = () => {
     const {setUser} = useUserContext();
     const history = useHistory();
 
-    const signin = (email, password) => {
+    const signin = useCallback((email, password) => {
         postRequest("login_check", {
             username: email,
             password
@@ -52,7 +52,7 @@ const Signin = () => {
         }).catch(() => {
             setErrorNotification("Bad credentials");
         });
-    };
+    });
 
     return (
         <Container className={styles.container}>
